@@ -11,7 +11,7 @@
         <module>dave-api</module>
         <module>dave-control</module>
         <module>dave-base</module>
-        <module>dave-codemaker</module>
+        <module>dave-biz</module>
         <module>dave-util</module>
     </modules>
 
@@ -32,7 +32,7 @@
 
     <properties>
 
-    <spring-version></spring-version>
+    <spring-version>4.3.2.RELEASE</spring-version>
 
     </properties>
 
