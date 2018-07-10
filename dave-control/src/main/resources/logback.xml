@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod=" 5 seconds" debug="false">
+	<jmxConfigurator/>
+
+	<property name="LOG_PATH" value="${logger.path}"/>
+	<property name="LOG_LEVEL" value="${logger.level}"/>
+
+	<!--业务日志输出格式-->
+	<property name="SERVICE_OUTPUT_PATTERN"
+			  value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{INNER_TRACE_ID}] %-5level %logger{56} - %msg%n" />
+
+	<!--SQL监控日志输出格式-->
+	<property name="SQL_OUTPUT_PATTERN"
+			  value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{INNER_TRACE_ID}] %-5level %logger{56} - %msg%n" />
+
+	<!--日志文件保留最大天数-->
+	<property name="MAX_DAY" value="30"/>
+	<property name="MAX_SIZE" value="100mb" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="UMP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/ump-boss.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/ump-boss-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/common-error.log</File>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/common-error-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="DUBBO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/dubbo.log</File>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/dubbo-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="KAFKA" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/kafka.log</File>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/kafka-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="ROOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/root.log</File>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/root-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 100MB -->
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/sql.log</File>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/sql-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 100MB -->
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SQL_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="TRANSFER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/transfer.log</File>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/transfer-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="GRANT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/grant.log</File>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/grant-%d{yyyy-MM-dd}-%i.log.gz
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${MAX_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>${MAX_DAY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${SERVICE_OUTPUT_PATTERN}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{56} - %msg%n
+			</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<!-- 过滤掉临界点LOG_LEVEL级别之前的日志 -->
+			<level>${LOG_LEVEL}</level>
+		</filter>
+	</appender>
+
+	<logger name="com.alibaba.dubbo" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="DUBBO"/>
+	</logger>
+
+	<logger name="druid.sql.Statement" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="SQL"/>
+	</logger>
+
+	<logger name="com.caocao.bss.ump.common.monitor.SqlMonitorManager" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="SQL"/>
+	</logger>
+
+	<logger name="com.github.pagehelper.PageHelper" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="SQL"/>
+	</logger>
+
+	<logger name="com.caocao.bss.ump" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="UMP"/>
+	</logger>
+
+	<logger name="kafka" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="KAFKA"/>
+	</logger>
+
+	<logger name="org.apache.zookeeper" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="ROOT"/>
+	</logger>
+
+	<logger name="grant" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="GRANT"/>
+	</logger>
+
+	<logger name="transfer" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="TRANSFER"/>
+	</logger>
+
+	<logger name="com.caocao.auth" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="ROOT"/>
+	</logger>
+
+	<logger name="com.caocao.bss.authclient" additivity="false">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="ROOT"/>
+	</logger>
+
+	<root level="${LOG_LEVEL}">
+		<appender-ref ref="ERROR"/>
+		<appender-ref ref="ROOT"/>
+		<appender-ref ref="STDOUT"/>
+	</root>
+</configuration>

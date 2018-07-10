@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- dubbo基础配置 -->
+    <dubbo:application name="ump-boss" owner="${dubbo.application.owner}"/>
+    <dubbo:consumer check="${dubbo.service.check}" timeout="1000"/>
+    <dubbo:registry protocol="${dubbo.registry.protocol}" address="${dubbo.registry.address}"
+                    check="${dubbo.registry.check}"/>
+
+    <import resource="classpath*:dubbo/dubbo-consumer.xml"/>
+
+</beans>

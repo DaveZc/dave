@@ -1,2 +1,11 @@
 .idea/
 *.iml
+*.jar
+*.class
+dave-biz/target/
+dave-util/target/
+dave-service/target/
+dave-common/target/
+dave-api/target/
+dave-control/target/
+dave-dao/target/

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress SpringFacetInspection -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <import resource="classpath:database-template.xml"/>
+
+    <bean id="localDataSource" parent="dataSourceTemplate">
+        <!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
+        <property name="url" value="${local.jdbc.url}"/>
+        <property name="username" value="${local.jdbc.username}"/>
+        <property name="password" value="${local.jdbc.password}"/>
+    </bean>
+
+
+    <bean id="localSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="localDataSource"/>
+        <property name="mapperLocations" value="classpath:dal/mapper/local/*.xml"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="typeAliasesPackage" value="com.chenZ.dave.dao.local.dataobject"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.chenZ.dave.dao.local.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="localSqlSessionFactory"/>
+    </bean>
+
+
+    <!-- 事务管理器 -->
+    <bean id="localTransaction"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="localDataSource"/>
+    </bean>
+
+    <!-- 开启事务控制的注解支持 -->
+    <tx:annotation-driven transaction-manager="localTransaction"/>
+
+</beans>

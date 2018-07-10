@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caocao.bss.ump.dal.dao.mc.AccountCoinDAO">
+
+    <resultMap id="BaseResultMap" type="com.caocao.bss.ump.dal.dataobject.AccountCoinDO">
+        <result column="id" property="id" jdbcType="BIGINT" />
+        <result column="account_coin_code" property="accountCoinCode" jdbcType="VARCHAR" />
+        <result column="user_no" property="userNo" jdbcType="BIGINT" />
+        <result column="user_type" property="userType" jdbcType="TINYINT" />
+        <result column="activity_code" property="activityCode" jdbcType="VARCHAR" />
+        <result column="credits" property="credits" jdbcType="BIGINT" />
+        <result column="effective_begin" property="effectiveBegin" jdbcType="TIMESTAMP" />
+        <result column="effective_end" property="effectiveEnd" jdbcType="TIMESTAMP" />
+        <result column="update_version" property="updateVersion" jdbcType="BIGINT" />
+        <result column="del_flag" property="delFlag" jdbcType="TINYINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+	<sql id="Where_Clause" >
+		<trim prefix="where" prefixOverrides="and|or" >
+	       <if test="data.id != null " >
+			   and id = #{data.id,jdbcType=BIGINT}
+		   </if>
+	       <if test="data.accountCoinCode != null and data.accountCoinCode != ''" >
+			   and account_coin_code = #{data.accountCoinCode,jdbcType=VARCHAR}
+		   </if>
+	       <if test="data.userNo != null " >
+			   and user_no = #{data.userNo,jdbcType=BIGINT}
+		   </if>
+	       <if test="data.userType != null " >
+			   and user_type = #{data.userType,jdbcType=TINYINT}
+		   </if>
+	       <if test="data.activityCode != null and data.activityCode != ''" >
+			   and activity_code = 'CIS'
+		   </if>
+	       <if test="data.credits != null " >
+			   and credits = #{data.credits,jdbcType=BIGINT}
+		   </if>
+	       <if test="data.effectiveBegin != null " >
+			   and effective_begin = #{data.effectiveBegin,jdbcType=TIMESTAMP}
+		   </if>
+	       <if test="data.effectiveEnd != null " >
+			   and effective_end = #{data.effectiveEnd,jdbcType=TIMESTAMP}
+		   </if>
+	       <if test="data.updateVersion != null " >
+			   and update_version = #{data.updateVersion,jdbcType=BIGINT}
+		   </if>
+	       <if test="data.delFlag != null " >
+			   and del_flag = #{data.delFlag,jdbcType=TINYINT}
+		   </if>
+	       <if test="data.createTime != null " >
+			   and create_time = #{data.createTime,jdbcType=TIMESTAMP}
+		   </if>
+	       <if test="data.updateTime != null " >
+			   and update_time = #{data.updateTime,jdbcType=TIMESTAMP}
+		   </if>
+		</trim>
+	</sql>
+
+	<sql id="Base_Column_List" >
+		id ,
+		account_coin_code ,
+		user_no ,
+		user_type ,
+		activity_code ,
+		credits ,
+		effective_begin ,
+		effective_end ,
+		update_version ,
+		del_flag ,
+		create_time ,
+		update_time 
+	</sql>
+
+	<select id="findByPrimaryKey" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from mc_account_coin
+		where  id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="findAccountCoinByIdAndValidAndDelete" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from mc_account_coin
+		where  id = #{id,jdbcType=BIGINT}
+	    and del_flag = #{delFlag,jdbcType=TINYINT}
+	</select>
+
+	<select id="findByIds" parameterType="java.util.Set" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		from mc_account_coin
+		WHERE id IN
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+
+	<select id="findList" resultMap="BaseResultMap" parameterType="com.caocao.bss.ump.common.model.PageQueryCondition">
+		select
+		<include refid="Base_Column_List" />
+		from mc_account_coin
+		<if test="_parameter != null" >
+			<include refid="Where_Clause" />
+		</if>
+	</select>
+    <select id="findByUserNoAndType" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/>
+		FROM mc_account_coin
+		WHERE user_no = #{userNo} and user_type = #{userType} and activity_code = 'CIS'
+	</select>
+    <select id="findListSupportUserNos" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/>
+		from mc_account_coin
+		WHERE
+		activity_code = 'CIS' AND
+		user_no in
+		<foreach collection="userNos" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		order by update_time desc
+	</select>
+
+
+    <insert id="insert" parameterType="com.caocao.bss.ump.dal.dataobject.AccountCoinDO" useGeneratedKeys="true" keyProperty="id">
+		insert into mc_account_coin
+		(
+			account_coin_code, 
+			user_no, 
+			user_type, 
+			activity_code, 
+			credits, 
+			effective_begin, 
+			effective_end, 
+			update_version, 
+			del_flag, 
+			create_time, 
+			update_time
+		)
+		values
+		(
+			#{accountCoinCode,jdbcType=VARCHAR}, 
+			#{userNo,jdbcType=BIGINT}, 
+			#{userType,jdbcType=TINYINT}, 
+			#{activityCode,jdbcType=VARCHAR}, 
+			#{credits,jdbcType=BIGINT}, 
+			#{effectiveBegin,jdbcType=TIMESTAMP}, 
+			#{effectiveEnd,jdbcType=TIMESTAMP}, 
+			#{updateVersion,jdbcType=BIGINT}, 
+			#{delFlag,jdbcType=TINYINT}, 
+			#{createTime,jdbcType=TIMESTAMP}, 
+			#{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.caocao.bss.ump.dal.dataobject.AccountCoinDO">
+		update mc_account_coin 
+		<set>
+			<if test="accountCoinCode != null">
+				account_coin_code = #{accountCoinCode,jdbcType=VARCHAR}, 
+			</if>
+			<if test="userNo != null">
+				user_no = #{userNo,jdbcType=BIGINT}, 
+			</if>
+			<if test="userType != null">
+				user_type = #{userType,jdbcType=TINYINT}, 
+			</if>
+			<if test="activityCode != null">
+				activity_code = #{activityCode,jdbcType=VARCHAR}, 
+			</if>
+			<if test="credits != null">
+				credits = #{credits,jdbcType=BIGINT}, 
+			</if>
+			<if test="effectiveBegin != null">
+				effective_begin = #{effectiveBegin,jdbcType=TIMESTAMP}, 
+			</if>
+			<if test="effectiveEnd != null">
+				effective_end = #{effectiveEnd,jdbcType=TIMESTAMP}, 
+			</if>
+			<if test="updateVersion != null">
+				update_version = #{updateVersion,jdbcType=BIGINT}, 
+			</if>
+			<if test="delFlag != null">
+				del_flag = #{delFlag,jdbcType=TINYINT}, 
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP}, 
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<update id="updateAccountCoinValid">
+		update mc_account_coin
+		<set>
+		account_coin_code = #{accountCoinCode,jdbcType=VARCHAR},
+		user_no = #{userNo,jdbcType=BIGINT},
+		user_type = #{userType,jdbcType=TINYINT},
+		activity_code = #{activityCode,jdbcType=VARCHAR},
+		credits = #{credits,jdbcType=BIGINT},
+		effective_begin = #{effectiveBegin,jdbcType=TIMESTAMP},
+		effective_end = #{effectiveEnd,jdbcType=TIMESTAMP},
+		update_version = #{updateVersion,jdbcType=BIGINT},
+		del_flag = #{delFlag,jdbcType=TINYINT},
+		update_time = now()
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="delete">
+		delete from mc_account_coin where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+
+</mapper>

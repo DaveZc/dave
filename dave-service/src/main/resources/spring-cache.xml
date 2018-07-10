@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<bean id="commonJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${ump.redis.pool.maxActive}"/>
+		<property name="maxIdle" value="${ump.redis.pool.maxIdle}"/>
+		<property name="maxWaitMillis" value="${ump.redis.pool.maxWait}"/>
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<property name="minEvictableIdleTimeMillis" value="300000"/>
+		<property name="testOnBorrow" value="${ump.redis.pool.testOnBorrow}"/>
+		<property name="testOnReturn" value="false"/>
+		<property name="testWhileIdle" value="true"/>
+	</bean>
+
+	<bean id="codisConnectionFactory" class="com.caocao.bridge.codis.proxy.CodisConnectionFactory">
+		<property name="codisName" value="${ump.codis.name}"/>
+		<property name="zkServer" value="${ump.codis.zk.server}"/>
+		<property name="password" value="${ump.codis.password}"/>
+		<property name="retryTimes" value="${ump.codis.retry.times}"/>
+		<property name="retryWaitMills" value="${ump.codis.retry.wait.ms}"/>
+		<property name="timeout" value="${ump.codis.timeout}"/>
+		<property name="poolConfig" ref="commonJedisPoolConfig"/>
+	</bean>
+
+	<bean name="commonRedisTemplate"  class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="codisConnectionFactory"/>
+		<property name="keySerializer">
+			<bean class="org.springframework.data.redis.serializer.GenericToStringSerializer">
+				<constructor-arg type="java.lang.Class" value="java.lang.Object"/>
+			</bean>
+		</property>
+		<property name="valueSerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+		</property>
+
+		<property name="hashKeySerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+		</property>
+		<property name="hashValueSerializer">
+			<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+		</property>
+	</bean>
+
+	<bean id="codisPool" class="com.caocao.util.business.redis.cluster.CodisPool">
+		<constructor-arg name="codisName" value="${ump.codis.name}" />
+		<constructor-arg name="zkServer" value="${ump.codis.zk.server}" />
+		<constructor-arg name="password" value="${ump.codis.password}" />
+		<constructor-arg name="timeOut" value="${ump.codis.timeout}" />
+	</bean>
+
+	<bean id="redisOperator" class="com.caocao.util.business.redis.cluster.ClusterRedisOperator">
+		<constructor-arg ref="codisPool" />
+	</bean>
+
+	<bean id="distributedLock" class="com.caocao.util.business.redis.lock.DistributedLock">
+		<constructor-arg  ref="redisOperator" />
+	</bean>
+</beans>

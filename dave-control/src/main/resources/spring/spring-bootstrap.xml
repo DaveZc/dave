@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+	   http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- active annotation -->
+    <mvc:annotation-driven/>
+
+    <import resource="classpath*:dubbo/spring-dubbo.xml"/>
+
+
+    <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
+
+    <!-- scan package -->
+    <context:component-scan base-package="com.chenZ.dave.service"/>
+    <context:component-scan base-package="com.chenZ.dave.biz"/>
+    <context:component-scan base-package="com.chenZ.dave.common"/>
+
+    <bean id="serviceFactory" class="com.chenZ.dave.common.ServiceFactory"/>
+
+    <!-- 引入数据源 -->
+    <import resource="classpath*:spring-service-ump.xml"/>
+
+    <!-- 引入缓存 -->
+    <import resource="classpath:spring-cache.xml"/>
+
+</beans>

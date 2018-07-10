@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.caocao.bss.ump.dal.dao.mc.McAccountAssetDAO" >
+  <resultMap id="BaseResultMap" type="com.caocao.bss.ump.dal.dataobject.McAccountAssetDO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_no" property="userNo" jdbcType="BIGINT" />
+    <result column="user_type" property="userType" jdbcType="INTEGER" />
+    <result column="biz_no" property="bizNo" jdbcType="INTEGER" />
+    <result column="asset_id" property="assetId" jdbcType="BIGINT" />
+    <result column="class_one" property="classOne" jdbcType="INTEGER" />
+    <result column="class_two" property="classTwo" jdbcType="INTEGER" />
+    <result column="effective_start" property="effectiveStart" jdbcType="TIMESTAMP" />
+    <result column="effective_end" property="effectiveEnd" jdbcType="TIMESTAMP" />
+    <result column="use_status" property="useStatus" jdbcType="INTEGER" />
+    <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP" />
+    <result column="discount_flag" property="discountFlag" jdbcType="INTEGER" />
+    <result column="activity_source" property="activitySource" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, user_no, user_type, biz_no, asset_id, class_one, class_two, effective_start,
+    effective_end, use_status, receive_time, discount_flag, activity_source, create_time,
+    update_time
+  </sql>
+
+  <sql id="Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="data.userNo != null" >
+         and user_no = #{data.userNo,jdbcType=BIGINT}
+      </if>
+      <if test="data.userType != null" >
+         and user_type = #{data.userType,jdbcType=INTEGER}
+      </if>
+      <if test="data.bizNo != null" >
+         and biz_no = #{data.bizNo,jdbcType=INTEGER}
+      </if>
+      <if test="data.assetId != null" >
+         and asset_id = #{data.assetId,jdbcType=BIGINT}
+      </if>
+      <if test="data.classOne != null" >
+         and class_one = #{data.classOne,jdbcType=INTEGER}
+      </if>
+      <if test="data.classTwo != null" >
+         and class_two = #{data.classTwo,jdbcType=INTEGER}
+      </if>
+      <if test="data.effectiveStart != null" >
+         and effective_start = #{data.effectiveStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="data.effectiveEnd != null" >
+         and effective_end = #{data.effectiveEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="data.useStatus != null" >
+         and use_status = #{data.useStatus,jdbcType=INTEGER}
+      </if>
+      <if test="data.receiveTime != null" >
+         and receive_time = #{data.receiveTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="data.discountFlag != null" >
+         and discount_flag = #{data.discountFlag,jdbcType=INTEGER}
+      </if>
+      <if test="data.activitySource != null" >
+         and activity_source = #{data.activitySource,jdbcType=BIGINT}
+      </if>
+      <if test="data.createTime != null" >
+         and create_time = #{data.createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="data.updateTime != null" >
+         and update_time = #{data.updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </trim>
+  </sql>
+
+  <select id="findAccountAssetByCondition" resultMap="BaseResultMap" parameterType="com.caocao.bss.ump.common.model.PageQueryCondition" >
+    select
+    <include refid="Base_Column_List" />
+    from mc_account_asset
+    <if test="data != null" >
+      <include refid="Where_Clause" />
+    </if>  </select>
+
+  <select id="findAccountAssetById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from mc_account_asset
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteAccountAssetById" parameterType="java.lang.Long" >
+    delete from mc_account_asset
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertAccountAsset" parameterType="com.caocao.bss.ump.dal.dataobject.McAccountAssetDO" >
+    insert into mc_account_asset (id, user_no, user_type, 
+      biz_no, asset_id, class_one, 
+      class_two, effective_start, effective_end, 
+      use_status, receive_time, discount_flag, 
+      activity_source, create_time, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{userNo,jdbcType=BIGINT}, #{userType,jdbcType=INTEGER}, 
+      #{bizNo,jdbcType=INTEGER}, #{assetId,jdbcType=BIGINT}, #{classOne,jdbcType=INTEGER}, 
+      #{classTwo,jdbcType=INTEGER}, #{effectiveStart,jdbcType=TIMESTAMP}, #{effectiveEnd,jdbcType=TIMESTAMP}, 
+      #{useStatus,jdbcType=INTEGER}, #{receiveTime,jdbcType=TIMESTAMP}, #{discountFlag,jdbcType=INTEGER}, 
+      #{activitySource,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+  <update id="updatecAccountAssetById" parameterType="com.caocao.bss.ump.dal.dataobject.McAccountAssetDO" >
+    update mc_account_asset
+    <set >
+      <if test="data.id != null" >
+        id = #{data.id,jdbcType=BIGINT},
+      </if>
+      <if test="data.userNo != null" >
+        user_no = #{data.userNo,jdbcType=BIGINT},
+      </if>
+      <if test="data.userType != null" >
+        user_type = #{data.userType,jdbcType=INTEGER},
+      </if>
+      <if test="data.bizNo != null" >
+        biz_no = #{data.bizNo,jdbcType=INTEGER},
+      </if>
+      <if test="data.assetId != null" >
+        asset_id = #{data.assetId,jdbcType=BIGINT},
+      </if>
+      <if test="data.classOne != null" >
+        class_one = #{data.classOne,jdbcType=INTEGER},
+      </if>
+      <if test="data.classTwo != null" >
+        class_two = #{data.classTwo,jdbcType=INTEGER},
+      </if>
+      <if test="data.effectiveStart != null" >
+        effective_start = #{data.effectiveStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data.effectiveEnd != null" >
+        effective_end = #{data.effectiveEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data.useStatus != null" >
+        use_status = #{data.useStatus,jdbcType=INTEGER},
+      </if>
+      <if test="data.receiveTime != null" >
+        receive_time = #{data.receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data.discountFlag != null" >
+        discount_flag = #{data.discountFlag,jdbcType=INTEGER},
+      </if>
+      <if test="data.activitySource != null" >
+        activity_source = #{data.activitySource,jdbcType=BIGINT},
+      </if>
+      <if test="data.createTime != null" >
+        create_time = #{data.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data.updateTime != null" >
+        update_time = #{data.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+   WHERE
+    id = #{data.id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

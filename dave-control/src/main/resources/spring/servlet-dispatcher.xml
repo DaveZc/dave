@@ -1,0 +1,78 @@
+<!--suppress SpringFacetInspection -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns="http://www.springframework.org/schema/beans" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	 http://www.springframework.org/schema/aop/spring-aop.xsd
+	  http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+	   default-lazy-init="true" default-autowire="byName">
+
+	<aop:aspectj-autoproxy/>
+	<mvc:annotation-driven/>
+
+	<context:component-scan base-package="com.chenZ.dave.controller"/>
+
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<mvc:annotation-driven conversion-service="conversionService">
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/plain;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html;charset=UTF-8</value>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+				<property name="objectMapper">
+					<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+						<property name="dateFormat">
+							<bean class="java.text.SimpleDateFormat">
+								<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+							</bean>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 文件上传配置 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="512000000"/>
+		<property name="maxInMemorySize" value="10240000"/>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<bean class="com.chenZ.dave.common.interceptor.GlobalExceptionMappingResolver">
+		<!--<property name="defaultErrorView" value="error/common"/>-->
+		<property name="defaultStatusCode" value="200"></property>
+		<property name="warnLogCategory" value="WARN"></property>
+		<property name="charset" value="utf-8"/>
+	</bean>
+
+	<!-- 声明Spring格式转换器，并配置相关类型的转换器，现只配置了日期对应的转换器 -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="registerDefaultFormatters" value="false"/>
+		<property name="formatters">
+			<bean class="com.chenZ.dave.common.DateFormatter"/>
+		</property>
+	</bean>
+
+	<mvc:default-servlet-handler/>
+
+</beans>
